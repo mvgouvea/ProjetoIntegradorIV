@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:form>
+			<h:dataTable value="#{patrimonio.buscaTodos}" var="objPatrimonio">
+				<f:facet name="header">
+					<h2>
+						<h:outputLabel value="Listagem de Patrimônios" />
+					</h2>
+					<h:commandButton value="novo" action="#{patrimonio.actionNovo}" />
+					<hr />
+				</f:facet>
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="Código" />
+					</f:facet>
+					<h:outputText value="#{objPatrimonio.codigo}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="Descrição" />
+					</f:facet>
+					<h:outputText value="#{objPatrimonio.descricao}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="Data de compra" />
+					</f:facet>
+					<h:outputText value="#{objPatrimonio.dataCompra}">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="America/Brasilia" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<h:commandButton value="excluir"
+						action="#{patrimonio.actionDeleta}">
+						<f:setPropertyActionListener value="#{objPatrimonio}"
+							target="#{patrimonio.patrimonio}" />
+					</h:commandButton>
+				</h:column>
+				<h:column>
+					<h:commandButton value="editar" action="#{patrimonio.actionAltera}">
+						<f:setPropertyActionListener value="#{objPatrimonio}"
+							target="#{patrimonio.patrimonio}" />
+					</h:commandButton>
+				</h:column>
+				<h:column>
+					<h:commandButton value="baixar" action="#{patrimonio.btnBaixa}">
+						<f:setPropertyActionListener value="#{objPatrimonio}"
+							target="#{patrimonio.patrimonio}" />
+					</h:commandButton>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:form>
+			<h:dataTable value="#{tipoPatrimonio.buscaTodos}"
+				var="objTipoPatrimonio">
+					<f:facet name="header">
+						<h:outputLabel value="Listagem de Tipos de Patrimônio"
+							style="font-size: 20px" />
+						<hr />
+						<h:column>
+							<h:commandButton value="novo" action="#{tipoPatrimonio.actionNovo}"
+								style="font-size: 11px;" />
+						</h:column>
+						<hr />
+					</f:facet>
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="Código |" style="font-size: 17px;" />
+					</f:facet>
+					<h:outputText value="#{objTipoPatrimonio.codigo}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="Descrição" style="font-size: 17px;" />
+					</f:facet>
+					<h:outputText value="#{objTipoPatrimonio.descricao}" />
+				</h:column>
+				<h:column>
+					<h:column>
+						<h:commandButton value="excluir"
+							action="#{tipoPatrimonio.actionDeleta}" style="font-size: 11px">
+							<f:setPropertyActionListener value="#{objTipoPatrimonio}"
+								target="#{tipoPatrimonio.tipoPatrimonio}" />
+						</h:commandButton>
+					</h:column>
+					<h:column>
+						<h:commandButton value="editar"
+							action="#{tipoPatrimonio.actionAltera}" style="font-size: 11px">
+							<f:setPropertyActionListener value="#{objTipoPatrimonio}"
+								target="#{tipoPatrimonio.tipoPatrimonio}" />
+						</h:commandButton>
+					</h:column>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

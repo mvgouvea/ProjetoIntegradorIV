@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:body>
+			<h:form>
+				<h:panelGrid columns="2">
+					<f:facet name="header">
+						<h:outputText value="Memória de Cálculo " />
+						<hr/>
+					</f:facet>
+					<h:outputLabel value="Valor de Compra:" />
+					<h:outputText value="#{patrimonio.patrimonio.valorCompra}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+					<h:outputLabel value="Valor de Residual:" />
+					<h:outputText value="#{patrimonio.patrimonio.valorResidual}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+					<h:outputLabel value="Data de Compra" />
+					<h:outputText value="#{patrimonio.patrimonio.dataCompra}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputLabel value="Data de Hoje" />
+					<h:outputText value="#{patrimonio.patrimonio.dataBaixa}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputLabel value="Qtde de meses de uso:" />
+					<h:outputText value="#{patrimonio.d.periodo}">
+						<f:convertNumber type="number" />
+					</h:outputText>
+					<h:outputLabel value="Taxa:" />
+					<h:outputText value="#{patrimonio.d.taxa}">
+						<f:convertNumber type="percent" />
+					</h:outputText>
+					<h:outputLabel value="Depreciação Acumulada:" />
+					<h:outputText value="#{patrimonio.d.DA}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+					<h:outputLabel value="Valor Contábil:" />
+					<h:outputText value="#{patrimonio.d.VC}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</h:panelGrid>
+				<h:commandButton value="Voltar" action="listaPatrimonio" />
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

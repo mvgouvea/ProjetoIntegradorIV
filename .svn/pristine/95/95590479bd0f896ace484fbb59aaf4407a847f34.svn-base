@@ -1,0 +1,174 @@
+package br.com.controlepatrimonial.DAO;
+
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.controlepatrimonial.calculos.Depreciacao;
+import br.com.controlepatrimonial.modelo.Patrimonio;
+import br.com.controlepatrimonial.util.ConnectionFactory;
+
+public class PatrimonioDAO implements Serializable {
+	private static final long serialVersionUID = 1L;
+	Connection conexao = null;
+	PreparedStatement ps = null;
+
+	public void grava(Patrimonio p) {
+		String sql = "INSERT INTO patrimonio(codigo, data_compra, "
+				+ "valor_compra, turno_trabalho, condicao, "
+				+ "valor_residual, codigo_tipo_patrimonio, descricao, anos_uso) "
+				+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+		try {
+			conexao = ConnectionFactory.getConexao();
+			ps = conexao.prepareStatement(sql);
+			ps.setString(1, p.getCodigo());
+			ps.setDate(2, (new java.sql.Date(p.getDataCompra().getTime())));
+			ps.setFloat(3, p.getValorCompra());
+			ps.setInt(4, p.getTurnoTrabalho());
+			ps.setString(5, p.getCondicao());
+			ps.setFloat(6, p.getValorResidual());
+			ps.setString(7, p.getTipoPatrimonio());
+			ps.setString(8, p.getDescricao());
+			ps.setFloat(9, p.getAnosUso());
+			ps.executeUpdate();
+		} catch (Exception e) {
+			System.err.println("Erro no grava() PatrimonioDAO");
+			e.printStackTrace();
+		} finally {
+			ConnectionFactory.fechar(conexao, ps);
+		}
+	}
+	public void gravaBaixa(Patrimonio p, Depreciacao d){
+		String sql = "INSERT INTO patrimonio_baixa(ganho, perda, id_tipo_baixa, id_patrimonio) VALUES ( ?, ?, ?, ?)";
+
+		try {
+			conexao = ConnectionFactory.getConexao();
+			ps = conexao.prepareStatement(sql);
+			ps.setFloat(1, d.getGanho());
+			ps.setFloat(2, d.getPerda());
+			ps.setString(3, p.getTipoBaixa());
+			ps.setString(4, p.getCodigo());
+			ps.executeUpdate();
+		} catch (Exception e) {
+			System.err.println("Erro no gravaBaixa() PatrimonioDAO");
+			e.printStackTrace();
+		} finally {
+			ConnectionFactory.fechar(conexao, ps);
+		}	
+	}
+
+	public void altera(Patrimonio p) {
+		String sql = "UPDATE patrimonio SET data_compra = ?, "
+				+ "valor_compra = ?, turno_trabalho = ?, condicao = ?, "
+				+ "valor_residual = ?, codigo_tipo_patrimonio = ?, descricao = ?, "
+				+ "anos_uso = ? WHERE codigo = ?";
+
+		try {
+			conexao = ConnectionFactory.getConexao();
+			ps = conexao.prepareStatement(sql);
+			ps.setString(9, p.getCodigo());
+			ps.setDate(1, (new java.sql.Date(p.getDataCompra().getTime())));
+			ps.setFloat(2, p.getValorCompra());
+			ps.setInt(3, p.getTurnoTrabalho());
+			ps.setString(4, p.getCondicao());
+			ps.setFloat(5, p.getValorResidual());
+			ps.setString(6, p.getTipoPatrimonio());
+			ps.setString(7, p.getDescricao());
+			ps.setFloat(8, p.getAnosUso());
+			ps.executeUpdate();
+		} catch (Exception e) {
+			System.err.println("Erro no altera() PatrimonioDAO");
+			e.printStackTrace();
+		} finally {
+			ConnectionFactory.fechar(conexao, ps);
+		}
+	}
+
+	public void deleta(Patrimonio p) {
+		String sql = "DELETE FROM patrimonio WHERE codigo = ?";
+
+		try {
+			conexao = ConnectionFactory.getConexao();
+			ps = conexao.prepareStatement(sql);
+			ps.setString(1, p.getCodigo());
+			ps.executeUpdate();
+		} catch (Exception e) {
+			System.err.println("Erro no deleta() PatrimonioDAO");
+			e.printStackTrace();
+		} finally {
+			ConnectionFactory.fechar(conexao, ps);
+		}
+	}
+
+	public Patrimonio busca(Patrimonio patrimonio) {
+		ResultSet rs = null;
+		String sql = "SELECT * FROM patrimonio WHERE codigo = ?";
+		Patrimonio p = null;
+		try {
+			conexao = ConnectionFactory.getConexao();
+			ps = conexao.prepareStatement(sql);
+			ps.setString(1, patrimonio.getCodigo());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				p = new Patrimonio();
+				p.setCodigo(rs.getString("codigo"));
+				p.setDescricao(rs.getString("descricao"));
+				p.setDataCompra(new java.util.Date(rs.getDate("data_compra")
+						.getTime()));
+				p.setDataBaixa(new java.util.Date(rs.getDate("data_baixa")
+						.getTime()));
+				p.setCondicao(rs.getString("condicao"));
+				p.setAnosUso(rs.getFloat("anos_uso"));
+				p.setTipoPatrimonio(rs.getString("codigo_tipo_patrimonio"));
+				p.setTurnoTrabalho(rs.getInt("turno_trabalho"));
+				p.setValorResidual(rs.getFloat("valor_residual"));
+				p.setValorCompra(rs.getFloat("valor_compra"));
+				p.setValorBaixa(rs.getFloat("valor_baixa"));
+
+			}
+		} catch (Exception e) {
+			System.err.println("Erro no busca() PatrimonioDAO");
+			e.printStackTrace();
+		} finally {
+			ConnectionFactory.fechar(conexao, ps, rs);
+		}
+		return p;
+	}
+
+	public List<Patrimonio> buscaTodos() {
+		ResultSet rs = null;
+		String sql = "SELECT * FROM patrimonio;";
+		List<Patrimonio> lsPatrimonio = null;
+		try {
+			conexao = ConnectionFactory.getConexao();
+			ps = conexao.prepareStatement(sql);
+			rs = ps.executeQuery();
+			lsPatrimonio = new ArrayList<Patrimonio>();
+			while (rs.next()) {
+				Patrimonio p = new Patrimonio();
+				p.setCodigo(rs.getString("codigo"));
+				p.setDescricao(rs.getString("descricao"));
+				p.setDataCompra(rs.getDate("data_compra"));
+				p.setDataBaixa(rs.getDate("data_baixa"));
+				p.setCondicao(rs.getString("condicao"));
+				p.setAnosUso(rs.getFloat("anos_uso"));
+				p.setTipoPatrimonio(rs.getString("codigo_tipo_patrimonio"));
+				p.setTurnoTrabalho(rs.getInt("turno_trabalho"));
+				p.setValorResidual(rs.getFloat("valor_residual"));
+				p.setValorCompra(rs.getFloat("valor_compra"));
+				p.setValorBaixa(rs.getFloat("valor_baixa"));
+				lsPatrimonio.add(p);
+			}
+		} catch (Exception e) {
+			System.err.println("Erro no buscaTodos() PatrimonioDAO");
+			e.printStackTrace();
+		} finally {
+			ConnectionFactory.fechar(conexao, ps, rs);
+		}
+		return lsPatrimonio;
+	}
+}

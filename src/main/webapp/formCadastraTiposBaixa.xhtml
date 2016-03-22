@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="conteudo">
+	    <h:body>
+			<h:form>
+				<h:panelGrid columns="2">
+					<f:facet name="header">
+						<h2>
+							<h:outputLabel value="Cadastro do Tipo de Baixa dos Patrimônios" />
+						</h2>
+					</f:facet>
+					<h:outputLabel value="Código:" />
+					<h:inputText value="#{tipoBaixa.tipoBaixa.codigo}" readonly="#{tipoBaixa.codigoEditavel}" />
+					<h:outputLabel value="Descrição:" />
+					<h:inputText value="#{tipoBaixa.tipoBaixa.descricao}" />
+					<h:outputLabel value="Calcula Ganho ou Perda:" />
+					<h:selectOneRadio value="#{tipoBaixa.tipoBaixa.calculaGP}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+					</h:selectOneRadio>
+				</h:panelGrid>
+				<h:column>
+					<h:commandButton value="Gravar" action="#{tipoBaixa.actionGrava}" />
+				</h:column>
+				<h:column>
+					<h:commandButton value="Cancelar" action="index.xhtml" />
+				</h:column>
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

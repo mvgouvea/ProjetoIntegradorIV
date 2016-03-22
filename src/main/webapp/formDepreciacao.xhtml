@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:body>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$(function() {
+						$('.data').mask("99/99/9999");
+					});
+				});
+			</script>
+			<h:form>
+				<h:panelGrid columns="2">
+					<f:facet name="header">
+						<h:outputText value="Depreciação do Patrimônio: " />
+						<h:outputText value="#{patrimonio.patrimonio.descricao}" />
+					</f:facet>
+					<h:outputLabel value="Código:" />
+					<h:outputText value="#{patrimonio.patrimonio.codigo}" />
+					<h:outputLabel value="Valor de Compra:" />
+					<h:outputText value="#{patrimonio.patrimonio.valorCompra}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+					<h:outputLabel value="Data de Compra" />
+					<h:outputText value="#{patrimonio.patrimonio.dataCompra}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputLabel value="Tipo de Patrimônio:" />
+					<h:outputText value="#{patrimonio.patrimonio.tipoPatrimonio}" />
+					<h:outputLabel value="Depreciação Acumulada:" />
+					<h:outputText value="#{patrimonio.d.DA}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+					<h:outputLabel value="Valor Contábil:" />
+					<h:outputText value="#{patrimonio.d.VC}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</h:panelGrid>
+				<h:commandButton value="Voltar" action="listaPatrimonio" />
+				<h:commandButton value="Mem. de Cálculo"
+					action="#{patrimonio.actionGeraMemoria}" />
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

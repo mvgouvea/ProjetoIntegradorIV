@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:body>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$(function() {
+						$('.data').mask("99/99/9999");
+					});
+				});
+			</script>
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('.compra').priceFormat({
+						prefix : 'R$ ',
+						centsSeparator : ',',
+						thousandsSeparator : '.'
+					});
+				});
+			</script>
+			<h:form>
+				<h:panelGrid columns="2">
+					<f:facet name="header">
+						<h2>
+							<h:outputLabel value="Resultados da Baixa de Patrimônio" />
+						</h2>
+					</f:facet>
+					<h:outputLabel value="Código:" />
+					<h:outputText value="#{patrimonio.patrimonio.codigo}" />
+					<h:outputLabel value="Descrição:" />
+					<h:outputText value="#{patrimonio.patrimonio.descricao}" />
+					<h:outputLabel value="Tipo de baixa:" />
+					<h:outputText value="#{patrimonio.patrimonio.tipoBaixa}" />
+					<h:outputLabel value="Data de Compra:" />
+					<h:outputText value="#{patrimonio.patrimonio.dataCompra}"
+						styleClass="data">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="America/Brasilia" />
+					</h:outputText>
+					<h:outputLabel value="Data de Baixa:" />
+					<h:outputText value="#{patrimonio.patrimonio.dataBaixa}"
+						styleClass="data">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="America/Brasilia" />
+					</h:outputText>
+					<h:outputLabel value="Valor de compra:" />
+					<h:outputText value="#{patrimonio.patrimonio.valorCompra}"
+						styleClass="compra" converter="dinheiroConverter" />
+					<h:outputLabel value="Valor de venda:" />
+					<h:outputText value="#{patrimonio.patrimonio.valorBaixa}"
+						styleClass="compra" converter="dinheiroConverter" />
+					<h:outputLabel value="Ganho:" />
+					<h:outputText value="#{patrimonio.d.ganho}" styleClass="compra"
+						converter="dinheiroConverter" />
+					<h:outputLabel value="Perda:" />
+					<h:outputText value="#{patrimonio.d.perda}" styleClass="compra"
+						converter="dinheiroConverter" />
+				</h:panelGrid>
+				<h:commandButton value="Confirmar"
+					action="#{patrimonio.actionConfirmar}" />
+				<h:commandButton value="Cancelar" action="index.xhtml" />
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

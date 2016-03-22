@@ -1,0 +1,74 @@
+package br.com.controlepatrimonial.web;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
+import br.com.controlepatrimonial.DAO.TipoBaixaDAO;
+import br.com.controlepatrimonial.modelo.TipoBaixa;
+
+@ManagedBean(name = "tipoBaixa")
+@SessionScoped
+public class BMTipoBaixa implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private TipoBaixa tipoBaixa = new TipoBaixa();
+	private TipoBaixaDAO tbDAO;
+	private Boolean codigoEditavel;
+	
+	public String actionNovo() {
+		this.tipoBaixa = new TipoBaixa();
+		codigoEditavel = false;
+		return "formCadastraTiposBaixa";
+	}
+
+	public String actionGrava() {
+		tbDAO = new TipoBaixaDAO();
+		if (tbDAO.busca(tipoBaixa) != null){
+			tbDAO.altera(tipoBaixa);
+		} else {
+			tbDAO.grava(tipoBaixa);
+		}
+		return "listaTiposBaixa";
+	}
+
+	public String actionDeleta() {
+		tbDAO = new TipoBaixaDAO();
+		tbDAO.deleta(tipoBaixa);
+		return "listaTiposBaixa";
+	}
+
+	public String actionAltera() {
+		tbDAO = new TipoBaixaDAO();
+		codigoEditavel = true;
+		tbDAO.altera(tipoBaixa);
+		return "formCadastraTiposBaixa";
+	}
+
+	public String actionBusca() {
+		return "";
+	}
+
+	public List<TipoBaixa> getBuscaTodos() {
+		tbDAO = new TipoBaixaDAO();
+		return tbDAO.buscaTodos();
+	}
+
+	public TipoBaixa getTipoBaixa() {
+		return tipoBaixa;
+	}
+
+	public void setTipoBaixa(TipoBaixa tipoBaixa) {
+		this.tipoBaixa = tipoBaixa;
+	}
+
+	public Boolean getCodigoEditavel() {
+		return codigoEditavel;
+	}
+
+	public void setCodigoEditavel(Boolean codigoEditavel) {
+		this.codigoEditavel = codigoEditavel;
+	}
+}

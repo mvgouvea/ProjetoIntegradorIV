@@ -1,0 +1,117 @@
+package br.com.controlepatrimonial.calculos;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+
+import br.com.controlepatrimonial.DAO.TipoBaixaDAO;
+import br.com.controlepatrimonial.DAO.TipoPatrimonioDAO;
+import br.com.controlepatrimonial.modelo.Patrimonio;
+import br.com.controlepatrimonial.modelo.TipoBaixa;
+import br.com.controlepatrimonial.modelo.TipoPatrimonio;
+
+public class ControlaCalculos {
+	TipoPatrimonioDAO tpDAO;
+	TipoPatrimonio tp;
+	Depreciacao d;
+	ControlaCalculos c;
+
+	public Depreciacao deprecia(Patrimonio patrimonio) {
+		d = new Depreciacao();
+		c = new ControlaCalculos();
+
+		if (patrimonio.getValorResidual() > 0.01) {
+			d.setValorPatrimonio(patrimonio.getValorCompra()
+					- patrimonio.getValorResidual());
+		}
+		d.setPeriodo(c.getPeriodo(patrimonio));
+		d.setTaxa(c.getTaxa(patrimonio));
+		d.setVU(c.getVidaRestante(patrimonio));
+
+		d.setDA(d.getValorPatrimonio() * d.getTaxa() * d.getPeriodo() / 12);
+		d.setVC((d.getValorPatrimonio() + patrimonio.getValorResidual())- d.getDA());
+		
+		if(c.getCalculaGP(patrimonio) == true){
+			if(patrimonio.getValorBaixa() >= d.getVC()){
+				d.setGanho(patrimonio.getValorBaixa() - d.getVC());
+			}else{
+				d.setPerda(patrimonio.getValorBaixa() - d.getVC());
+			}
+		}
+		return d;
+	}
+	private boolean getCalculaGP(Patrimonio patrimonio){
+		TipoBaixa tb = new TipoBaixa();
+		TipoBaixaDAO tbDAO = new TipoBaixaDAO();
+		tb.setCodigo(patrimonio.getTipoBaixa());
+		tb = tbDAO.busca(tb);
+		if(tb.isCalculaGP() == true){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	private float getTaxa(Patrimonio patrimonio) {
+		tp = new TipoPatrimonio();
+		tpDAO = new TipoPatrimonioDAO();
+		float taxa = 0;
+
+		tp.setCodigo(patrimonio.getTipoPatrimonio());
+		tp = tpDAO.busca(tp);
+		switch (tp.getVidaUtil()) {
+		case 1:
+			taxa = tp.getVidaUtil() / 100;
+			break;
+		case 2:
+			taxa = (float) (tp.getVidaUtil() / 100 * 1.5);
+			break;
+		case 3:
+			taxa = tp.getVidaUtil() / 100 * 2;
+			break;
+		}
+		return taxa;
+	}
+
+	private int getPeriodo(Patrimonio patrimonio) {
+		int m = 0;
+		patrimonio.setDataCompra(new java.util.Date(patrimonio.getDataCompra()
+				.getTime()));
+		patrimonio.setDataBaixa(new java.util.Date(patrimonio.getDataBaixa()
+				.getTime()));
+
+		Instant inicioI = patrimonio.getDataCompra().toInstant();
+		Instant fimI = patrimonio.getDataBaixa().toInstant();
+		LocalDate inicio = inicioI.atZone(ZoneId.systemDefault()).toLocalDate();
+
+		if (inicio.getDayOfMonth() > 15) {
+			inicio.plusMonths(1);
+		}
+		LocalDate fim = fimI.atZone(ZoneId.systemDefault()).toLocalDate();
+		if (fim.getDayOfMonth() < 15) {
+			fim.plusMonths(-1);
+		}
+		Period p = Period.between(inicio, fim);
+		if (p.getYears() != 0) {
+			m = p.getYears() * 12;
+		}
+		if (p.getMonths() != 0) {
+			m = m + p.getMonths();
+		}
+		return m;
+	}
+
+	private float getVidaRestante(Patrimonio patrimonio) {
+		tp.setCodigo(patrimonio.getTipoBaixa());
+		float VU = 0, v = (float) tp.getVidaUtil();
+		tp = tpDAO.busca(tp);
+		if (patrimonio.getAnosUso() >= v) {
+			VU = tp.getVidaUtil() / 2;
+		} else {
+			VU = v - patrimonio.getAnosUso();
+		}
+		return VU;
+	}
+
+}
